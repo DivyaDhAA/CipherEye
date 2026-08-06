@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+package-lock.json
+
+# Environment & Secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build Outputs & Bundles
+dist/
+build/
+.expo/
+.next/
+*.apk
+*.aab
+
+# Android & Native Build
+android/.gradle/
+android/app/build/
+android/.idea/
+android/local.properties
+*.keystore
+
+# Python & ML Service
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

@@ -1,0 +1,101 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id               String         @id @default(uuid())
+  email            String         @unique
+  username         String         @unique
+  password         String
+  role             String         @default("User") // Admin, Analyst, User
+  status           String         @default("Active") // Active, Suspended, Pending
+  twoFactorEnabled Boolean        @default(false)
+  otpSecret        String?
+  emailVerified    Boolean        @default(false)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  profile          Profile?
+  threatReports    ThreatReport[]
+  auditLogs        AuditLog[]
+  sessions         Session[]
+  refreshTokens    RefreshToken[]
+  tickets          SupportTicket[]
+}
+
+model Profile {
+  id                   String   @id @default(uuid())
+  userId               String   @unique
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fullName             String?
+  phone                String?
+  avatar               String?
+  language             String   @default("en")
+  theme                String   @default("dark")
+  notificationSettings String   @default("all") // all, email_only, push_only, none
+  privacySettings      String   @default("high") // high, standard, low
+  updatedAt            DateTime @updatedAt
+}
+
+model ThreatReport {
+  id           String   @id @default(uuid())
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  type         String   // URL, QR, Message, Deepfake
+  inputData    String   // The analyzed URL, text message, or file metadata
+  resultData   String   // JSON string of detailed forensic/analysis results
+  threatScore  Int
+  riskLevel    String   // Safe, Medium, High
+  confidence   Float
+  explanation  String   // Explanations/features from SHAP/LIME
+  isSaved      Boolean  @default(true)
+  isDeleted    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String   // e.g. LOGIN_SUCCESS, USER_REGISTER, SCAN_COMPLETED, DELETE_REPORT
+  details   String   // Description of action
+  ipAddress String?
+  createdAt DateTime @default(now())
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  userAgent String?
+  ipAddress String?
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model SupportTicket {
+  id          String   @id @default(uuid())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  title       String
+  description String
+  category    String   // Bug, Feature Request, Inquiry, General Support
+  status      String   @default("Open") // Open, Pending, Resolved, Closed
+  feedback    String?  // Admin/Analyst comments
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
