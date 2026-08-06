@@ -142,6 +142,10 @@ def generate_excel_reports(results, output_dir="Test Results/Excel"):
 
     wb_master.save(os.path.join(output_dir, "Automation_Test_Report.xlsx"))
 
+    passed_cases = [tc for tc in results if tc["status"] == "PASS"]
+    failed_cases = [tc for tc in results if tc["status"] == "FAIL"]
+    skipped_cases = [tc for tc in results if tc["status"] == "SKIP"]
+
     # -----------------------------------------------------------------
     # FILE 2: Passed_Test_Cases.xlsx
     # -----------------------------------------------------------------
@@ -150,7 +154,7 @@ def generate_excel_reports(results, output_dir="Test Results/Excel"):
     ws_p.title = "Passed Cases"
     ws_p.append(headers_1)
     for tc in passed_cases:
-        ws_p.append([tc["test_id"], tc["module"], tc["test_name"], tc["priority"], tc["status"], tc["duration_ms"], tc["preconditions"], tc["expected_result"], tc["actual_result"]])
+        ws_p.append([tc["test_id"], tc.get("test_type", "Validation"), tc.get("scope", "validation"), tc["module"], tc["test_name"], tc["priority"], tc["status"], tc["duration_ms"], tc["preconditions"], tc["expected_result"], tc["actual_result"]])
     wb_p.save(os.path.join(output_dir, "Passed_Test_Cases.xlsx"))
 
     # -----------------------------------------------------------------
@@ -161,7 +165,7 @@ def generate_excel_reports(results, output_dir="Test Results/Excel"):
     ws_f.title = "Failed Cases"
     ws_f.append(headers_1)
     for tc in failed_cases:
-        ws_f.append([tc["test_id"], tc["module"], tc["test_name"], tc["priority"], tc["status"], tc["duration_ms"], tc["preconditions"], tc["expected_result"], tc["actual_result"]])
+        ws_f.append([tc["test_id"], tc.get("test_type", "Validation"), tc.get("scope", "validation"), tc["module"], tc["test_name"], tc["priority"], tc["status"], tc["duration_ms"], tc["preconditions"], tc["expected_result"], tc["actual_result"]])
     wb_f.save(os.path.join(output_dir, "Failed_Test_Cases.xlsx"))
 
     # -----------------------------------------------------------------

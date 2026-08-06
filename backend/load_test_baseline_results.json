@@ -1,0 +1,19 @@
+{
+  "testName": "Baseline / Load Testing (100 Concurrent Users)",
+  "concurrentUsers": 100,
+  "durationSeconds": 60.017,
+  "totalRequests": 13704,
+  "successRequests": 13704,
+  "failedRequests": 0,
+  "requestsPerSecond": 228.34,
+  "responseTime": {
+    "minMs": 2.28,
+    "avgMs": 434.38,
+    "p50Ms": 89.51,
+    "p95Ms": 1231.3,
+    "maxMs": 1714.69
+  },
+  "statusCodes": {
+    "201": 13704
+  }
+}
